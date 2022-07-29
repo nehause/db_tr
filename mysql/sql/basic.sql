@@ -22,3 +22,52 @@ ALTER TABLE member2 MODIFY COLUMN username varchar(100);
 
 -- 컬럼 이름 변경
 ALTER TABLE member2 CHANGE COLUMN username nickname varchar(45);
+
+-- 컬럼 삭제 (보통 삭제하기전에 통채로 백업을 시켜놓는다)
+ALTER TABLE member2 DROP COLUMN nickname;
+
+-- row 삭제 (delete 구문을 쓸때는 테이블 이름을 쓰기 전에 where 구문을 미리 쓰고 테이블 이름을 넣는다. 테이블 drop 방지)
+-- Seq의 이름이 memberSeq 같은거면 그거에 맞춰야한다. 검색이람 같음 ex) member WHERE memberSeq =11;
+DELETE FROM member2 WHERE Seq = 11;
+
+-- commit / rollback
+
+-- 데이터 수정 (delete 구문을 쓸때와 같이 where 구문을 쓰고 테이블 이름을 넣어서 쓴다.)
+UPDATE member2 SET
+	name = "진휘재"
+	,nameEng ="Jinhwijae"
+	where seq = 1;
+
+-- 문자열 비교 like 
+
+SELECT * FROM member
+WHERE 1=1
+-- AND name like '공%'
+-- AND name like '%석'
+-- AND name like '%소%'
+-- AND email like '%naver%'
+-- AND email like '%gmail%'
+-- AND address1 like '%송파구%'
+-- AND dob like '199%'
+-- 08 날짜에 08을 넣는다면 08년, 08월 08일까지 검색되어 월을 검색하고싶다면 %-08-%를 하면 된다.
+AND dob like '%08%'
+
+;
+
+-- 숫자 비교 (between은 숫자 ~ 숫자)
+SELECT * FROM member
+WHERE 1=1
+-- AND privacy = 1
+-- AND privacy > 2
+-- AND privacy >= 2
+-- AND privacy between 3 and 4 
+AND dob between '1980-01-01' and '1999-12-31'
+;
+
+SELECT * FROM member2
+WHERE 1=1
+AND pwd is null
+-- AND nameEng = null -- 틀린 표현이다.
+-- ""은 빈칸을 검색하는거지 null을 검색하는게 아니다
+-- AND pwd is = ''
+;
