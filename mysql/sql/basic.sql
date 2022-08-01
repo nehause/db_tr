@@ -71,3 +71,4 @@ AND pwd is null
 -- ""은 빈칸을 검색하는거지 null을 검색하는게 아니다
 -- AND pwd is = ''
 ;
+
