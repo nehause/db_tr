@@ -72,3 +72,11 @@ AND pwd is null
 -- AND pwd is = ''
 ;
 
+CREATE TABLE IF NOT EXISTS `future`.`CCG` (
+  `CGseq` INT NOT NULL AUTO_INCREMENT,
+  `CGName` VARCHAR(45) NULL,
+  `CGUseNy` VARCHAR(45) NULL,
+  `CGorder` VARCHAR(45) NULL,
+  PRIMARY KEY (`CGseq`))
+ENGINE = InnoDB
+;
