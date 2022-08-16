@@ -22,10 +22,33 @@ WHERE 1=1
 ;
 
 -- 메인 페이지 메인책 목록
+-- 메인책의 기준을 잡아야한다. 랜덤으로 나오게 하는가 아니면 판매량으로 나오게 하느냐.
+
 
 -- 메인 베스트셀러 목록
+-- 판매량이 높은 상품을 기준으로 4권을 보여준다. (sign, name, cost*(1-sale)as price, cost)
+
+select
+	sign
+    ,name
+    ,cost*(1-sale) as price
+    ,cost
+from book
+	ORDER BY amount desc
+    limit 4;
+;
 
 -- 메인 화제의 신간 목록
+-- 출간일 혹은 도서 등록일이 가장 최근인 것을 기준으로 가장 최근 도서 4권을 보여준다. (sign, name, cost*(1-sale)as price, cost)
+
+select
+	sign
+    ,name
+    ,cost*(1-sale) as price
+    ,cost
+from book
+	ORDER BY dor desc
+    limit 4;
 
 -- 도서 목록
 
@@ -112,24 +135,42 @@ WHERE 1=1
 SELECT 
 	a.purchaseSeq
     -- 책 총 가격 : sum
-    ,(select sum(price) from purchase_book where purchase_purchaseSeq = "3") as priceSum
+    ,(select 
+		sum(price)
+        from purchase_book 
+        where purchase_purchaseSeq = "3"
+	) as priceSum
     -- 책 이름을 문자열로 가로로 붙여서 나오게 : 책이름 1개만 나오고 외 2권 : 책 카운트 계산이 필요
-	-- ,(select book_bookSeq from purchase_book where purchase_bookSeq = a.purchaseSeq = "1" ) as aaa
-	,(select GROUP_CONCAT(book_bookSeq SEPARATOR ', ') from purchase_book where purchase_purchaseSeq = "3") as productName
-	,(select sum(count) from purchase_book where purchase_purchaseSeq = "3") as quantity
+	,(
+		select 
+			GROUP_CONCAT(b.name SEPARATOR ', ')
+            -- 여기에 책이름으로 GROUP_CONCAT
+		from purchase_book a
+			-- 여기에 조인문 작성 
+            join book b on b.bookSeq = a.book_bookSeq
+        where 1=1 
+			and purchase_purchaseSeq = "3"
+	) as productName
+	,(select
+		sum(count) 
+		from purchase_book 
+        where 1=1
+			and purchase_purchaseSeq = "3"
+	) as quantity
     ,a.purchaseStatus
-FROM purchase a
-JOIN purchase_book b on b.purchase_purchaseSeq = a.purchaseSeq
-JOIN book c on c.bookSeq = b.book_bookSeq
+FROM 
+	purchase a
+	JOIN purchase_book b on b.purchase_purchaseSeq = a.purchaseSeq
 WHERE 1=1
-AND a.purchaseSeq = "3"
+	AND a.purchaseSeq = "3"
 GROUP BY a.purchaseSeq
 ;
 
 select
 	*
 from purchase_book
-where purchase_purchaseSeq ="8"
+where 1=1
+	and purchase_purchaseSeq ="8"
 ;
 
 -- 아이디 찾기
