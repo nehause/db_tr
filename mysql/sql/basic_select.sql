@@ -32,4 +32,22 @@ LEFT JOIN book_comment b on b.member_seq = a.memberSeq
 -- WHERE 1=1
 -- ORDER
 -- GROUP BY
+
 -- UNION
+select
+	name
+	,dob
+    ,id
+    ,pwd
+	,gender
+from member2
+union
+select
+	name
+    ,dob
+    ,id
+    ,password
+    ,gender
+from member
+;
+	

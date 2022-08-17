@@ -1,5 +1,6 @@
 use future;
 
+
 -- CCG |  CCG : CC | CC NAME
 select
 	a.CGseq
@@ -135,11 +136,7 @@ WHERE 1=1
 SELECT 
 	a.purchaseSeq
     -- 책 총 가격 : sum
-    ,(select 
-		sum(price)
-        from purchase_book 
-        where purchase_purchaseSeq = "3"
-	) as priceSum
+    ,sum(b.price) as priceSum
     -- 책 이름을 문자열로 가로로 붙여서 나오게 : 책이름 1개만 나오고 외 2권 : 책 카운트 계산이 필요
 	,(
 		select 
@@ -151,12 +148,7 @@ SELECT
         where 1=1 
 			and purchase_purchaseSeq = "3"
 	) as productName
-	,(select
-		sum(count) 
-		from purchase_book 
-        where 1=1
-			and purchase_purchaseSeq = "3"
-	) as quantity
+	,sum(b.count) as quantity
     ,a.purchaseStatus
 FROM 
 	purchase a
