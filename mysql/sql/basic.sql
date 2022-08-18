@@ -96,3 +96,34 @@ CREATE TABLE IF NOT EXISTS `future`.`CG` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 ;
+
+CREATE TABLE IF NOT EXISTS `future`.`bookUploaded` (
+  `bookUSeq` INT NOT NULL AUTO_INCREMENT,
+  `type` TINYINT NULL,
+  `defaultNy` TINYINT NULL,
+  `sort` TINYINT NULL,
+  `originalName` VARCHAR(45) NULL,
+  `uuidName` VARCHAR(45) NULL,
+  `ext` VARCHAR(45) NULL,
+  `size` BIGINT NULL,
+  `delNy` TINYINT NULL,
+  `pSeq` BIGINT NULL,
+  PRIMARY KEY (`bookUSeq`))
+ENGINE = InnoDB
+;
+
+CREATE TABLE IF NOT EXISTS `future`.`writerUploaded` (
+  `writerUSeq` INT NOT NULL AUTO_INCREMENT,
+  `type` TINYINT NULL,
+  `defaultNy` TINYINT NULL,
+  `sort` TINYINT NULL,
+  `originalName` VARCHAR(45) NULL,
+  `uuidName` VARCHAR(45) NULL,
+  `ext` VARCHAR(45) NULL,
+  `size` BIGINT NULL,
+  `delNy` TINYINT NULL,
+  `pSeq` BIGINT NULL,
+  PRIMARY KEY (`writerUSeq`))
+ENGINE = InnoDB
+;
+
