@@ -207,3 +207,22 @@ select userName FROM member
 WHERE 1=1
 	and userName="UserNameValue"
 ;
+
+select 
+	count(CSeq) as CodeCount
+FROM CG
+WHERE 1=1
+	and CCG_CGSeq = 1
+;
+
+SELECT
+	a.*
+	,(select 
+		count(b.CSeq)
+	FROM CG b
+	WHERE 1=1
+		and CCG_CGSeq = a.CGseq
+	) as CodeCount
+FROM CCG a
+WHERE 1=1
+	AND CGDelNy = 0
