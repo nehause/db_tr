@@ -147,7 +147,7 @@ SELECT
             join book b on b.bookSeq = a.book_bookSeq
         where 1=1 
 			and purchase_purchaseSeq = "3"
-	) as productName
+	) as productNametransport
 	,sum(b.count) as quantity
     ,a.purchaseStatus
 FROM 
