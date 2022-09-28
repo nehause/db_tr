@@ -71,7 +71,7 @@ SELECT
     ,a.dop
     ,a.cost
     ,a.cost*(1-a.sale) as price
-    ,a.cost*a.accmluate as accmluate
+    ,a.cost*a.accmulate as accmulate
     ,a.isbn
     ,a.page
     ,a.size
@@ -134,19 +134,19 @@ WHERE 1=1
 
 -- 주문 내역 (주문번호, 상품금액, 상품정보, 수량, 주문상태) b를 제외하여 만든다.
 SELECT 
-	a.purchaseSeq
+	a.*
     -- 책 총 가격 : sum
     ,sum(b.price) as priceSum
     -- 책 이름을 문자열로 가로로 붙여서 나오게 : 책이름 1개만 나오고 외 2권 : 책 카운트 계산이 필요
 	,(
 		select 
-			GROUP_CONCAT(b.name SEPARATOR ', ')
+			GROUP_CONCAT(c.name SEPARATOR ', ')
             -- 여기에 책이름으로 GROUP_CONCAT
-		from purchase_book a
+		from purchase_book b
 			-- 여기에 조인문 작성 
-            join book b on b.bookSeq = a.book_bookSeq
-        where 1=1 
-			and purchase_purchaseSeq = "3"
+            join book c on c.bookSeq = b.book_bookSeq 
+			join purchase_book a on b.purchase_purchaseSeq = a.purchaseSeq 
+			
 	) as productNametransport
 	,sum(b.count) as quantity
     ,a.purchaseStatus
@@ -154,7 +154,6 @@ FROM
 	purchase a
 	JOIN purchase_book b on b.purchase_purchaseSeq = a.purchaseSeq
 WHERE 1=1
-	AND a.purchaseSeq = "3"
 GROUP BY a.purchaseSeq
 ;
 
@@ -226,3 +225,15 @@ SELECT
 FROM CCG a
 WHERE 1=1
 	AND CGDelNy = 0
+;
+
+SELECT
+	a.*
+   ,b.name
+   ,GROUP_CONCAT(d.name SEPARATOR ', ') as purchaseBooks
+FROM purchase a
+JOIN member b on a.member_memberSeq = b.memberSeq
+JOIN purchase_book c on c.purchase_purchaseSeq = a.purchaseSeq
+JOIN book d on d.bookSeq = c.book_bookSeq
+where 1=1
+;
