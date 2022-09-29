@@ -227,13 +227,99 @@ WHERE 1=1
 	AND CGDelNy = 0
 ;
 
+-- orderList 작성
 SELECT
 	a.*
    ,b.name
-   ,GROUP_CONCAT(d.name SEPARATOR ', ') as purchaseBooks
+   ,(select
+   GROUP_CONCAT(d.name SEPARATOR ', ') 
+   FROM purchase_book c
+   JOIN book d on d.bookSeq = c.book_bookSeq
+   where 1=1
+	and purchase_purchaseSeq = purchaseSeq
+   )as purchaseBook
+   ,(select
+   GROUP_CONCAT(c.count SEPARATOR ', ') 
+   FROM purchase_book c
+   JOIN book d on d.bookSeq = c.book_bookSeq
+   where 1=1
+	and purchase_purchaseSeq = purchaseSeq
+   )as purchaseBook
+   ,sum(c.price) as priceSum
 FROM purchase a
 JOIN member b on a.member_memberSeq = b.memberSeq
-JOIN purchase_book c on c.purchase_purchaseSeq = a.purchaseSeq
-JOIN book d on d.bookSeq = c.book_bookSeq
+join purchase_book c on purchase_purchaseSeq = purchaseSeq
+where 1=1
+group by purchaseSeq
+;
+
+-- 외 몇건으로 변환
+
+SELECT
+	a.*
+   ,b.name
+   ,(select
+   case
+   when count(d.name) = 1 then d.name
+   when count(d.name) > 1 then concat(min(d.name) , ' 외 ' , cast(COUNT(name) as char)-1 , ' 건' )
+   end
+   FROM purchase_book c
+   JOIN book d on d.bookSeq = c.book_bookSeq
+   where 1=1
+	and purchase_purchaseSeq = purchaseSeq
+   )as purchaseBook
+   ,(select
+	case	
+	when count(c.count) = 1 then concat(c.count, '권')
+    when count(c.count) > 1 then concat(max(c.count) , '권 외 ' , cast(COUNT(name) as char)-1 , ' 건' )
+	end
+   FROM purchase_book c
+   JOIN book d on d.bookSeq = c.book_bookSeq
+   where 1=1
+	and purchase_purchaseSeq = purchaseSeq
+   )as purchaseCount
+   ,sum(c.price) as priceSum
+FROM purchase a
+JOIN member b on a.member_memberSeq = b.memberSeq
+join purchase_book c on purchase_purchaseSeq = purchaseSeq
+where 1=1
+group by purchaseSeq
+;
+
+-- 검색 최적화
+
+SELECT
+	a.*
+   ,b.name
+   ,(select
+   case
+   when count(d.name) = 1 then d.name
+   when count(d.name) > 1 then concat(min(d.name) , ' 외 ' , cast(COUNT(name) as char)-1 , ' 건' )
+   end
+   FROM purchase_book c
+   JOIN book d on d.bookSeq = c.book_bookSeq
+   where 1=1
+	and purchase_purchaseSeq = purchaseSeq
+   )as purchaseBook
+   ,(select
+	case	
+	when count(c.count) = 1 then concat(c.count, '권')
+    when count(c.count) > 1 then concat(max(c.count) , '권 외 ' , cast(COUNT(name) as char)-1 , ' 건' )
+	end
+   FROM purchase_book c
+   JOIN book d on d.bookSeq = c.book_bookSeq
+   where 1=1
+	and purchase_purchaseSeq = purchaseSeq
+   )as purchaseCount
+   ,(select
+   sum(c.price)
+   from purchase_book c
+   where 1=1
+	and purchase_purchaseSeq = purchaseSeq
+   group by purchaseSeq
+   ) as priceSum
+-- join문을 줄이고 group by를 서브쿼리로 옮긴다.   
+FROM purchase a
+JOIN member b on a.member_memberSeq = b.memberSeq
 where 1=1
 ;
