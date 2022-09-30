@@ -50,4 +50,68 @@ select
     ,gender
 from member
 ;
+
+
+-- 실험용 쿼리
+SELECT 
+	DISTINCT
+	a.*
+	,(SELECT
+		GROUP_CONCAT(c.name SEPARATOR ', ')
+		FROM writer c
+        JOIN book_writer b on b.writer_writerSeq = c.writerSeq
+        where 1=1
+			and  b.book_bookSeq = a.bookSeq 
+            ) as writer
 	
+FROM
+	book a
+    JOIN book_writer b on b.book_bookSeq = a.bookSeq 
+    
+    ;
+    
+    select aa.* from (
+    SELECT
+			DISTINCT
+			a.*
+			,(SELECT
+			GROUP_CONCAT(c.name SEPARATOR ', ')
+			FROM writer c
+	        JOIN book_writer b on b.writer_writerSeq = c.writerSeq
+	        where 1=1
+				and  b.book_bookSeq = a.bookSeq 
+	            ) as writer
+                FROM book a
+	JOIN book_writer b on b.book_bookSeq = a.bookSeq 
+	WHERE 1=1
+    ORDER BY a.bookSeq DESC
+    ) aa
+		limit 100 offset 0
+;
+-- book_writer 실험용
+SELECT
+	DISTINCT
+	a.*
+	,(SELECT
+	c.name,
+	case when count(*)=1
+	then max(name) + '외 1건'
+	end as writer
+	FROM writer c
+	JOIN book_writer b on b.writer_writerSeq = c.writerSeq
+	where 1=1
+		and  b.book_bookSeq = a.bookSeq 
+		) as writer
+	FROM book a
+	JOIN book_writer b on b.book_bookSeq = a.bookSeq 
+	WHERE 1=1
+	;
+-- 책 할인가 까지 포함하는 쿼리
+
+select
+	a.*
+    ,cost*(1-sale) as pay
+From book a
+
+;
+            

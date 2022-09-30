@@ -323,3 +323,53 @@ FROM purchase a
 JOIN member b on a.member_memberSeq = b.memberSeq
 where 1=1
 ;
+
+-- myroom 에서 쓸 쿼리
+SELECT
+	a.*
+   ,b.name
+   ,(select
+   case
+   when count(d.name) = 1 then d.name
+   when count(d.name) > 1 then concat(min(d.name) , ' 외 ' , cast(COUNT(name) as char)-1 , ' 건' )
+   end
+   FROM purchase_book c
+   JOIN book d on d.bookSeq = c.book_bookSeq
+   where 1=1
+	and purchase_purchaseSeq = purchaseSeq
+   )as purchaseBook
+   ,(select
+	case	
+	when count(c.count) = 1 then concat(c.count, '권')
+    when count(c.count) > 1 then concat(max(c.count) , '권 외 ' , cast(COUNT(name) as char)-1 , ' 건' )
+	end
+   FROM purchase_book c
+   JOIN book d on d.bookSeq = c.book_bookSeq
+   where 1=1
+	and purchase_purchaseSeq = purchaseSeq
+   )as purchaseCount
+   ,(select
+   sum(c.price)
+   from purchase_book c
+   where 1=1
+	and purchase_purchaseSeq = purchaseSeq
+   group by purchaseSeq
+   ) as priceSum
+-- join문을 줄이고 group by를 서브쿼리로 옮긴다.   
+FROM purchase a
+JOIN member b on a.member_memberSeq = b.memberSeq
+where 1=1
+	and member_memberSeq = 1 -- #{sessSeq}가 들어갈곳
+;
+
+-- myroom 관심상품
+select
+	b.sign
+    ,b.name
+    ,b.cost * (1-b.sale) as price
+    ,b.cost
+From favorite a
+join book b on a.book_bookSeq = b.bookSeq
+where 1=1
+	and member_memberSeq = 1 -- #{sessSeq}가 들어갈곳
+;
