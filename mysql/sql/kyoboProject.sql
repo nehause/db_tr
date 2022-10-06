@@ -29,27 +29,31 @@ WHERE 1=1
 -- 메인 베스트셀러 목록
 -- 판매량이 높은 상품을 기준으로 4권을 보여준다. (sign, name, cost*(1-sale)as price, cost)
 
+
 select
-	sign
+	bookSeq
+	,sign
     ,name
     ,cost*(1-sale) as price
     ,cost
 from book
 	ORDER BY amount desc
-    limit 4;
+    limit 4
 ;
 
 -- 메인 화제의 신간 목록
 -- 출간일 혹은 도서 등록일이 가장 최근인 것을 기준으로 가장 최근 도서 4권을 보여준다. (sign, name, cost*(1-sale)as price, cost)
 
 select
-	sign
+	bookSeq
+	,sign
     ,name
     ,cost*(1-sale) as price
     ,cost
 from book
 	ORDER BY dor desc
-    limit 4;
+    limit 4    
+;
 
 -- 도서 목록
 
@@ -373,3 +377,50 @@ join book b on a.book_bookSeq = b.bookSeq
 where 1=1
 	and member_memberSeq = 1 -- #{sessSeq}가 들어갈곳
 ;
+
+-- 메인 화면에 띄울거
+select
+	bookSeq
+    ,sign
+    ,topic
+    ,left(introduce , 30) as shortIntro
+from book
+    where 1=1
+    order by amount desc
+    limit 2
+;
+
+
+-- book mapper selectWriter
+SELECT
+	a.book_bookSeq
+	,a.writer_writerSeq
+FROM book_writer a
+JOIN book b on a.book_bookSeq = b.bookSeq
+WHERE 1=1
+	AND bookSeq = 1
+;
+            
+SELECT
+	DISTINCT
+	a.*
+	, cost*(1-sale) as price
+	,(SELECT
+	case
+	when count(c.name) = 1 then c.name
+	when count(c.name) > 1 then concat(min(c.name) , ' 외 ' , cast(COUNT(name) as char)-1 , ' 명' )
+	end
+	FROM writer c
+	JOIN book_writer b on b.writer_writerSeq = c.writerSeq
+	where 1=1
+		and  b.book_bookSeq = a.bookSeq 
+		) as writer
+FROM book a
+	WHERE 1=1
+;
+
+-- auto increment 초기화
+
+-- ALTER TABLE {테이블 이름} AUTO_INCREMENT = {사용할 번호};
+
+
