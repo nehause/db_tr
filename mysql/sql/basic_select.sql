@@ -114,4 +114,10 @@ select
 From book a
 
 ;
+
+select aa.* from ( SELECT DISTINCT a.* , cost*(1-sale) as price ,(SELECT case when count(c.name) 
+= 1 then c.name when count(c.name) > 1 then concat(min(c.name) , ' 외 ' , cast(COUNT(name) as 
+char)-1 , ' 명' ) end FROM writer c JOIN book_writer b on b.writer_writerSeq = c.writerSeq where 
+1=1 and b.book_bookSeq = a.bookSeq ) as writer FROM book a WHERE 1=1	 ORDER 
+BY a.bookSeq DESC ) aa limit 100 offset 0 
             
