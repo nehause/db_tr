@@ -423,4 +423,37 @@ FROM book a
 
 -- ALTER TABLE {테이블 이름} AUTO_INCREMENT = {사용할 번호};
 
-
+select aa.* from (      
+SELECT    
+	a.*    
+    ,cost*(1-sale) as price    
+    ,seq    
+    ,type    
+    ,defaultNy    
+    ,sort    
+    ,path    
+    ,originalName    
+    ,uuidName   
+    FROM book a   
+    join bookUploaded b on a.bookSeq = b.pSeq   
+    WHERE 1=1 
+    and type=1    
+    ORDER BY type, sort, bookSeq desc        
+    ) aa   limit 100 offset 0
+;
+select
+		a.*
+		,seq
+		,type
+		,defaultNy
+		,sort
+		,path
+		,originalName
+		,uuidName
+	from writer a
+	join book_writer b on a.writerSeq = b.writer_writerSeq
+	join writerUploaded c on a.writerSeq = c.pSeq
+	where 1=1
+	and book_bookSeq = 1
+	order by type, sort
+;
