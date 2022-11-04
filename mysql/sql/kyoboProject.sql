@@ -443,17 +443,86 @@ SELECT
 ;
 select
 		a.*
-		,seq
+		,b.*
+        ,c.*
+	from writer a
+	join book_writer b on a.writerSeq = b.writer_writerSeq
+	left join writerUploaded c on a.writerSeq = c.pSeq
+	where 1=1
+    and book_bookSeq = 1
+	order by type, sort
+;
+
+select
+		a.*
+	from writer a
+	join book_writer b on a.writerSeq = b.writer_writerSeq
+	where 1=1
+	and book_bookSeq = 7
+;
+
+show index from member2;
+
+
+
+alter table member2 drop index abc;
+
+create index abc on member2 (dob, gender)
+;
+create view bookV
+as
+select
+	a.*
+    ,b.*
+from book a
+join bookUploaded b 
+	on a.bookDelNy = 0 
+    and b.delNy = 0 
+    and a.bookSeq = b.pSeq
+    order by a.bookSeq
+    desc limit 100
+-- function 현재 작동 못함 (아마존 건드려야함)
+DELIMITER $$
+CREATE FUNCTION getMemberName (
+seq bigint
+) 
+RETURNS varchar(100)
+BEGIN
+	
+    declare rtName varchar(100);
+
+	select
+		name into rtName
+	from
+		Member2 a
+	where 1=1
+		and a.seq = seq
+	;
+
+	RETURN rtName;
+END$$
+DELIMITER ;
+
+set global log_bin_trust_function_creators = 1;
+
+select
+		b.bookSeq as bookSeq
+		,b.sign as bookSign
+	    ,b.name as bookName
+	    ,b.cost * (1-b.sale) as bookPrice
+	    ,b.cost as bookCost
+	    ,seq
 		,type
 		,defaultNy
 		,sort
 		,path
 		,originalName
 		,uuidName
-	from writer a
-	join book_writer b on a.writerSeq = b.writer_writerSeq
-	join writerUploaded c on a.writerSeq = c.pSeq
+	From favorite a
+	join book b on a.book_bookSeq = b.bookSeq
+	join bookUploaded c on b.bookSeq = c.pSeq
 	where 1=1
-	and book_bookSeq = 1
-	order by type, sort
-;
+		and type = 1
+		and a.member_memberSeq = 1
+        ;
+	
