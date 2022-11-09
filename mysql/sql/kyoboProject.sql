@@ -407,8 +407,8 @@ SELECT
 	, cost*(1-sale) as price
 	,(SELECT
 	case
-	when count(c.name) = 1 then c.name
-	when count(c.name) > 1 then concat(min(c.name) , ' 외 ' , cast(COUNT(name) as char)-1 , ' 명' )
+	when count(c.writerName) = 1 then c.writerName
+	when count(c.writerName) > 1 then concat(min(c.writerName) , ' 외 ' , cast(COUNT(writerName) as char)-1 , ' 명' )
 	end
 	FROM writer c
 	JOIN book_writer b on b.writer_writerSeq = c.writerSeq
