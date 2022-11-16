@@ -400,7 +400,7 @@ JOIN book b on a.book_bookSeq = b.bookSeq
 WHERE 1=1
 	AND bookSeq = 1
 ;
-            
+use future;
 SELECT
 	DISTINCT
 	a.*
@@ -422,6 +422,7 @@ FROM book a
 -- auto increment 초기화
 
 -- ALTER TABLE {테이블 이름} AUTO_INCREMENT = {사용할 번호};
+
 
 select aa.* from (      
 SELECT    
