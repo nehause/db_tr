@@ -527,3 +527,25 @@ select
 		and a.member_memberSeq = 1
         ;
 	
+    select
+	bookSeq
+	,name
+	,sign
+	,cost*(1-sale) as price
+	,stock
+    ,seq
+	,type
+	,defaultNy
+	,sort
+	,path
+	,originalName
+	,uuidName
+from book a
+join bookUploaded b on a.bookSeq = b.pSeq and type = 1
+where 1=1
+	and bookSeq = 1
+    or bookSeq = 2
+    or bookSeq = 3
+    ;
+    
+    
